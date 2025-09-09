@@ -7,10 +7,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { app } from "./firebase"; // Import the initialized Firebase app and Firestore instance
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [userType, setUserType] = useState("customer");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,10 +28,53 @@ const RegisterPage = () => {
     shopName: "",
     shopDescription: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Registration attempt:", formData);
+    setError("");
+    setLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // 1. Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+
+      // 2. Save additional user details to Firestore
+      const userDetails = {
+        uid: user.uid,
+        email: formData.email,
+        name: formData.name,
+        mobile: formData.mobile,
+        address: formData.address,
+        userType: userType, // customer or seller
+        createdAt: new Date(),
+      };
+
+      if (userType === "seller") {
+        Object.assign(userDetails, {
+          shopName: formData.shopName,
+          shopDescription: formData.shopDescription,
+        });
+      }
+
+      await addDoc(collection(db, "users"), userDetails);
+      console.log("User registered and details saved to Firestore:", userDetails);
+
+      // Redirect or show success message after successful registration
+    } catch (err: any) {
+      console.error("Registration failed:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateFormData = (field: string, value: string) => {
@@ -53,7 +103,7 @@ const RegisterPage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="customer" className="w-full">
+            <Tabs value={userType} onValueChange={(value) => setUserType(value)} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="customer">Customer</TabsTrigger>
                 <TabsTrigger value="seller">Seller</TabsTrigger>
@@ -61,6 +111,7 @@ const RegisterPage = () => {
               
               <TabsContent value="customer">
                 <form onSubmit={handleRegister} className="space-y-4">
+                  {/* Customer form fields */}
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
                     <div className="relative">
@@ -175,14 +226,15 @@ const RegisterPage = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full btn-hero">
-                    Create Customer Account
+                  <Button type="submit" className="w-full btn-hero" disabled={loading}>
+                    {loading ? "Creating..." : "Create Customer Account"}
                   </Button>
                 </form>
               </TabsContent>
               
               <TabsContent value="seller">
                 <form onSubmit={handleRegister} className="space-y-4">
+                  {/* Seller form fields */}
                   <div className="space-y-2">
                     <Label htmlFor="sellerName">Full Name</Label>
                     <div className="relative">
@@ -324,13 +376,13 @@ const RegisterPage = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full btn-hero">
-                    Create Seller Account
+                  <Button type="submit" className="w-full btn-hero" disabled={loading}>
+                    {loading ? "Creating..." : "Create Seller Account"}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
-
+            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
             <p className="text-center text-sm text-muted-foreground mt-6">
               Already have an account?{" "}
               <Link to="/login" className="text-primary hover:underline font-medium">

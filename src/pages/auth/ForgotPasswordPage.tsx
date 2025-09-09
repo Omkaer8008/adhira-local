@@ -5,34 +5,49 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "./firebase";
 
 const ForgotPasswordPage = () => {
-  const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: Reset Password
+  const [step, setStep] = useState(1); // 1: Email, 2: Reset Password
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
-    otp: "",
     newPassword: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSendOTP = (e: React.FormEvent) => {
+  const handleSendResetEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sending OTP to:", formData.email);
-    setStep(2);
+    setError("");
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, formData.email);
+      setStep(2);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyOTP = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Verifying OTP:", formData.otp);
-    setStep(3);
-  };
+    setError("");
 
-  const handleResetPassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Resetting password");
-    // Redirect to login page
+    if (formData.newPassword !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      console.log("Resetting password for:", formData.email);
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   const updateFormData = (field: string, value: string) => {
@@ -69,20 +84,18 @@ const ForgotPasswordPage = () => {
               <div>
                 <CardTitle className="text-2xl">
                   {step === 1 && "Forgot Password"}
-                  {step === 2 && "Verify OTP"}
-                  {step === 3 && "Reset Password"}
+                  {step === 2 && "Reset Password"}
                 </CardTitle>
                 <CardDescription>
-                  {step === 1 && "Enter your email to receive a reset code"}
-                  {step === 2 && "Enter the 6-digit code sent to your email"}
-                  {step === 3 && "Create a new password for your account"}
+                  {step === 1 && "Enter your email to receive a reset link"}
+                  {step === 2 && "Create a new password for your account"}
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             {step === 1 && (
-              <form onSubmit={handleSendOTP} className="space-y-4">
+              <form onSubmit={handleSendResetEmail} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
@@ -99,8 +112,8 @@ const ForgotPasswordPage = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full btn-hero">
-                  Send Reset Code
+                <Button type="submit" className="w-full btn-hero" disabled={loading}>
+                  {loading ? "Sending..." : "Send Reset Link"}
                 </Button>
 
                 <div className="text-center">
@@ -115,45 +128,6 @@ const ForgotPasswordPage = () => {
             )}
 
             {step === 2 && (
-              <form onSubmit={handleVerifyOTP} className="space-y-4">
-                <div className="text-center mb-4">
-                  <p className="text-sm text-muted-foreground">
-                    We've sent a 6-digit code to
-                  </p>
-                  <p className="font-medium">{formData.email}</p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="otp">Enter OTP</Label>
-                  <Input
-                    id="otp"
-                    type="text"
-                    placeholder="000000"
-                    value={formData.otp}
-                    onChange={(e) => updateFormData("otp", e.target.value)}
-                    className="text-center text-2xl tracking-widest"
-                    maxLength={6}
-                    required
-                  />
-                </div>
-
-                <Button type="submit" className="w-full btn-hero">
-                  Verify Code
-                </Button>
-
-                <div className="text-center">
-                  <button
-                    type="button"
-                    className="text-sm text-primary hover:underline"
-                    onClick={() => console.log("Resending OTP")}
-                  >
-                    Didn't receive the code? Resend
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {step === 3 && (
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">New Password</Label>
@@ -205,11 +179,12 @@ const ForgotPasswordPage = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full btn-hero">
-                  Reset Password
+                <Button type="submit" className="w-full btn-hero" disabled={loading}>
+                  {loading ? "Resetting..." : "Reset Password"}
                 </Button>
               </form>
             )}
+            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
           </CardContent>
         </Card>
       </div>

@@ -6,18 +6,58 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "./firebase";
+
+// Initialize Firebase Auth and Google provider once
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
-    otp: "",
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", loginData);
+    setError(""); // Clear previous errors
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
+      // The onAuthStateChanged listener in your main App component will handle navigation
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      await signInWithPopup(auth, googleProvider);
+      // The onAuthStateChanged listener will handle navigation
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Note: Phone number/OTP authentication is a more complex flow that requires
+  // a separate setup in Firebase. The current UI is a placeholder for this.
+  const handleOtpLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("OTP login is not yet implemented. Please use Email or Google.");
+  };
+
+  const updateLoginData = (field: string, value: string) => {
+    setLoginData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -59,7 +99,7 @@ const LoginPage = () => {
                         type="email"
                         placeholder="Enter your email"
                         value={loginData.email}
-                        onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                        onChange={(e) => updateLoginData("email", e.target.value)}
                         className="pl-10"
                         required
                       />
@@ -75,7 +115,7 @@ const LoginPage = () => {
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
                         value={loginData.password}
-                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                        onChange={(e) => updateLoginData("password", e.target.value)}
                         className="pl-10 pr-10"
                         required
                       />
@@ -100,14 +140,14 @@ const LoginPage = () => {
                     </Link>
                   </div>
 
-                  <Button type="submit" className="w-full btn-hero">
-                    Sign In
+                  <Button type="submit" className="w-full btn-hero" disabled={loading}>
+                    {loading ? "Signing In..." : "Sign In"}
                   </Button>
                 </form>
               </TabsContent>
               
               <TabsContent value="otp">
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleOtpLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="mobile">Mobile Number</Label>
                     <div className="relative">
@@ -122,7 +162,7 @@ const LoginPage = () => {
                     </div>
                   </div>
                   
-                  <Button type="button" variant="outline" className="w-full">
+                  <Button type="button" variant="outline" className="w-full" disabled={loading}>
                     Send OTP
                   </Button>
                   
@@ -132,18 +172,17 @@ const LoginPage = () => {
                       id="otp"
                       type="text"
                       placeholder="6-digit OTP"
-                      value={loginData.otp}
-                      onChange={(e) => setLoginData({ ...loginData, otp: e.target.value })}
                       maxLength={6}
                     />
                   </div>
 
-                  <Button type="submit" className="w-full btn-hero">
-                    Verify & Sign In
+                  <Button type="submit" className="w-full btn-hero" disabled={loading}>
+                    {loading ? "Verifying..." : "Verify & Sign In"}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
+            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
 
             <div className="mt-6">
               <div className="relative">
@@ -155,7 +194,7 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <Button variant="outline" className="w-full mt-4">
+              <Button onClick={handleGoogleLogin} variant="outline" className="w-full mt-4" disabled={loading}>
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
