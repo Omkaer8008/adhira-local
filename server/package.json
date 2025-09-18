@@ -1,0 +1,41 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"main": "app.js",
+	"scripts": {
+		"dev": "nodemon src/server.js",
+		"start": "node src/server.js",
+		"prisma:generate": "prisma generate",
+		"prisma:migrate": "prisma migrate dev",
+		"prisma:studio": "prisma studio",
+		"postinstall": "prisma generate",
+		"clean:win": "rd /s /q node_modules\\.prisma && rd /s /q node_modules\\@prisma",
+		"clean:unix": "rm -rf node_modules/.prisma node_modules/@prisma",
+		"reset:win": "npm run clean:win && npm install && npx prisma generate",
+		"reset:unix": "npm run clean:unix && npm install && npx prisma generate"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"@prisma/client": "^6.16.2",
+		"bcrypt": "^5.1.1",
+		"bcryptjs": "^3.0.2",
+		"cors": "^2.8.5",
+		"dotenv": "^16.6.1",
+		"express": "^4.21.2",
+		"express-validator": "^7.2.1",
+		"helmet": "^8.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.12.1",
+		"morgan": "^1.10.1"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.10",
+		"prisma": "^6.16.2"
+	},
+	"prisma": {
+		"seed": "node prisma/seed.js"
+	}
+}
