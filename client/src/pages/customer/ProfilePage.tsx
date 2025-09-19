@@ -182,7 +182,7 @@ const ProfilePage = () => {
                         </div>
                         <div className="text-sm text-muted-foreground">
                           <p>Date: {new Date(order.date).toLocaleDateString()}</p>
-                          <p>{order.items} items • ${order.total.toFixed(2)}</p>
+                          <p>{order.items} items • ₹{order.total.toFixed(2)}</p>
                         </div>
                       </div>
                       <Button variant="outline" size="sm">

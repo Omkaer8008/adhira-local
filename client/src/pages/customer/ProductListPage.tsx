@@ -146,8 +146,8 @@ const ProductListPage = () => {
             className="w-full"
           />
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+            <span>₹{priceRange[0]}</span>
+            <span>₹{priceRange[1]}</span>
           </div>
         </div>
       </div>
@@ -196,8 +196,8 @@ const ProductListPage = () => {
         <div className="space-y-2">
           {[4, 3, 2, 1].map((rating) => (
             <div key={rating} className="flex items-center space-x-2">
-              <Checkbox id={`rating-${rating}`} />
-              <label htmlFor={`rating-${rating}`} className="text-sm">
+              <Checkbox id={`rating-₹{rating}`} />
+              <label htmlFor={`rating-₹{rating}`} className="text-sm">
                 {rating}+ stars
               </label>
             </div>
@@ -338,7 +338,7 @@ const ProductListPage = () => {
             </div>
 
             {/* Product Grid */}
-            <div className={`grid gap-6 ${
+            <div className={`grid gap-6 ₹{
               viewMode === "grid" 
                 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" 
                 : "grid-cols-1"
@@ -349,7 +349,7 @@ const ProductListPage = () => {
                   {...product}
                   isWishlisted={wishlistedProducts.has(product.id)}
                   onToggleWishlist={() => handleToggleWishlist(product.id)}
-                  onAddToCart={() => console.log(`Added ${product.name} to cart`)}
+                  onAddToCart={() => console.log(`Added ₹{product.name} to cart`)}
                 />
               ))}
             </div>

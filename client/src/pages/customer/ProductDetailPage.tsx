@@ -45,7 +45,7 @@ const ProductDetailPage = () => {
       "Gift box included",
     ],
     stock: 15,
-    shipping: "Free shipping on orders over $50",
+    shipping: "Free shipping on orders over ₹50",
     returnPolicy: "30-day return policy",
   };
 
@@ -103,7 +103,7 @@ const ProductDetailPage = () => {
             <span>/</span>
             <Link to="/products" className="hover:text-primary">Products</Link>
             <span>/</span>
-            <Link to={`/products?category=${product.category.toLowerCase()}`} className="hover:text-primary">
+            <Link to={`/products?category=₹{product.category.toLowerCase()}`} className="hover:text-primary">
               {product.category}
             </Link>
             <span>/</span>
@@ -126,7 +126,7 @@ const ProductDetailPage = () => {
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 ${
+                  className={`w-20 h-20 rounded-lg overflow-hidden border-2 ₹{
                     selectedImage === index ? "border-primary" : "border-border"
                   }`}
                 >
@@ -147,7 +147,7 @@ const ProductDetailPage = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-4 w-4 ${
+                      className={`h-4 w-4 ₹{
                         i < Math.floor(product.rating) 
                           ? "text-yellow-400 fill-current" 
                           : "text-muted-foreground"
@@ -162,10 +162,10 @@ const ProductDetailPage = () => {
 
               <div className="flex items-center space-x-3 mb-6">
                 <span className="text-3xl font-bold text-primary">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(2)}
                 </span>
                 <span className="text-xl text-muted-foreground line-through">
-                  ${product.originalPrice.toFixed(2)}
+                  ₹{product.originalPrice.toFixed(2)}
                 </span>
                 <Badge className="bg-accent text-accent-foreground">
                   {discountPercentage}% OFF
@@ -242,7 +242,7 @@ const ProductDetailPage = () => {
                   onClick={() => setIsWishlisted(!isWishlisted)}
                   className={isWishlisted ? "text-accent border-accent" : ""}
                 >
-                  <Heart className={`h-4 w-4 ${isWishlisted ? "fill-current" : ""}`} />
+                  <Heart className={`h-4 w-4 ₹{isWishlisted ? "fill-current" : ""}`} />
                 </Button>
                 <Button variant="outline">
                   <Share2 className="h-4 w-4" />
@@ -315,7 +315,7 @@ const ProductDetailPage = () => {
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`h-3 w-3 ${
+                                  className={`h-3 w-3 ₹{
                                     i < review.rating 
                                       ? "text-yellow-400 fill-current" 
                                       : "text-muted-foreground"
@@ -344,8 +344,8 @@ const ProductDetailPage = () => {
               <ProductCard
                 key={product.id}
                 {...product}
-                onAddToCart={() => console.log(`Added ${product.name} to cart`)}
-                onToggleWishlist={() => console.log(`Toggled wishlist for ${product.name}`)}
+                onAddToCart={() => console.log(`Added ₹{product.name} to cart`)}
+                onToggleWishlist={() => console.log(`Toggled wishlist for ₹{product.name}`)}
               />
             ))}
           </div>

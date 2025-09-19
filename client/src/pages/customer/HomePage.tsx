@@ -25,12 +25,13 @@ const HomePage = () => {
     { name: "Books", icon: "📚", link: "/products?category=books" },
   ];
 
+  // Product prices are now in Rupees
   const featuredProducts = [
     {
       id: "1",
       name: "Handmade Silver Necklace",
-      price: 89.99,
-      originalPrice: 129.99,
+      price: 7499,
+      originalPrice: 10799,
       image: productJewelry,
       rating: 4.8,
       reviewCount: 124,
@@ -40,8 +41,8 @@ const HomePage = () => {
     {
       id: "2",
       name: "Organic Artisan Soap Set",
-      price: 24.99,
-      originalPrice: 34.99,
+      price: 1999,
+      originalPrice: 2999,
       image: productSoap,
       rating: 4.9,
       reviewCount: 89,
@@ -51,8 +52,8 @@ const HomePage = () => {
     {
       id: "3",
       name: "Premium Leather Handbag",
-      price: 156.99,
-      originalPrice: 199.99,
+      price: 12999,
+      originalPrice: 16499,
       image: productHandbag,
       rating: 4.7,
       reviewCount: 67,
@@ -174,12 +175,12 @@ const HomePage = () => {
                 {...product}
                 isWishlisted={wishlistedProducts.has(product.id)}
                 onToggleWishlist={() => handleToggleWishlist(product.id)}
-                onAddToCart={() => console.log(`Added ${product.name} to cart`)}
+                onAddToCart={() => console.log(`Added ₹{product.name} to cart`)}
               />
             ))}
           </div>
 
-          <div className="text-center mt-8 md:hidden">
+          <div className="text-center mt-8 md-hidden">
             <Button asChild>
               <Link to="/products">
                 View All Products
@@ -228,5 +229,4 @@ const HomePage = () => {
     </div>
   );
 };
-
 export default HomePage;

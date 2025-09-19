@@ -83,15 +83,15 @@ const OrderTrackingPage = () => {
     
     switch (status) {
       case "placed":
-        return <Package className={`h-5 w-5 ${iconClass}`} />;
+        return <Package className={`h-5 w-5 ₹{iconClass}`} />;
       case "accepted":
-        return <CheckCircle className={`h-5 w-5 ${iconClass}`} />;
+        return <CheckCircle className={`h-5 w-5 ₹{iconClass}`} />;
       case "shipped":
-        return <Truck className={`h-5 w-5 ${iconClass}`} />;
+        return <Truck className={`h-5 w-5 ₹{iconClass}`} />;
       case "delivered":
-        return <CheckCircle className={`h-5 w-5 ${iconClass}`} />;
+        return <CheckCircle className={`h-5 w-5 ₹{iconClass}`} />;
       default:
-        return <Clock className={`h-5 w-5 ${iconClass}`} />;
+        return <Clock className={`h-5 w-5 ₹{iconClass}`} />;
     }
   };
 
@@ -157,13 +157,13 @@ const OrderTrackingPage = () => {
                   {order.tracking.map((event, index) => (
                     <div key={event.status} className="flex items-start space-x-4">
                       <div className="flex flex-col items-center">
-                        <div className={`rounded-full p-2 ${
+                        <div className={`rounded-full p-2 ₹{
                           event.completed ? 'bg-green-100' : 'bg-muted'
                         }`}>
                           {getStatusIcon(event.status, event.completed)}
                         </div>
                         {index < order.tracking.length - 1 && (
-                          <div className={`w-px h-8 mt-2 ${
+                          <div className={`w-px h-8 mt-2 ₹{
                             event.completed ? 'bg-green-200' : 'bg-border'
                           }`} />
                         )}
@@ -171,7 +171,7 @@ const OrderTrackingPage = () => {
                       
                       <div className="flex-1 pb-6">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className={`font-medium ${
+                          <h3 className={`font-medium ₹{
                             event.completed ? 'text-foreground' : 'text-muted-foreground'
                           }`}>
                             {event.title}
@@ -209,7 +209,7 @@ const OrderTrackingPage = () => {
                       
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium text-foreground mb-1">
-                          <Link to={`/products/${item.id}`} className="hover:text-primary">
+                          <Link to={`/products/₹{item.id}`} className="hover:text-primary">
                             {item.name}
                           </Link>
                         </h3>
@@ -217,13 +217,13 @@ const OrderTrackingPage = () => {
                           by {item.seller}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          Qty: {item.quantity} × ${item.price}
+                          Qty: {item.quantity} × ₹{item.price}
                         </p>
                       </div>
                       
                       <div className="text-right">
                         <p className="font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ₹{(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -266,7 +266,7 @@ const OrderTrackingPage = () => {
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
-                  <span>${(order.total - (order.total * 0.08)).toFixed(2)}</span>
+                  <span>₹{(order.total - (order.total * 0.08)).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping</span>
@@ -274,12 +274,12 @@ const OrderTrackingPage = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Tax</span>
-                  <span>${(order.total * 0.08).toFixed(2)}</span>
+                  <span>₹{(order.total * 0.08).toFixed(2)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-semibold">
                   <span>Total</span>
-                  <span>${order.total.toFixed(2)}</span>
+                  <span>₹{order.total.toFixed(2)}</span>
                 </div>
               </CardContent>
             </Card>

@@ -39,7 +39,7 @@ const ProductCard = ({
   return (
     <div className="card-product group">
       <div className="relative">
-        <Link to={`/products/${id}`}>
+        <Link to={`/products/₹{id}`}>
           <div className="aspect-square overflow-hidden rounded-xl bg-muted">
             <img
               src={image}
@@ -60,12 +60,12 @@ const ProductCard = ({
         <Button
           variant="ghost"
           size="sm"
-          className={`absolute top-2 right-2 p-2 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background ${
+          className={`absolute top-2 right-2 p-2 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background ₹{
             isWishlisted ? "text-accent" : "text-muted-foreground"
           }`}
           onClick={onToggleWishlist}
         >
-          <Heart className={`h-4 w-4 ${isWishlisted ? "fill-current" : ""}`} />
+          <Heart className={`h-4 w-4 ₹{isWishlisted ? "fill-current" : ""}`} />
         </Button>
       </div>
 
@@ -74,7 +74,7 @@ const ProductCard = ({
           {category}
         </Badge>
         
-        <Link to={`/products/${id}`}>
+        <Link to={`/products/₹{id}`}>
           <h3 className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-2">
             {name}
           </h3>
@@ -85,7 +85,7 @@ const ProductCard = ({
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`h-3 w-3 ${
+                className={`h-3 w-3 ₹{
                   i < Math.floor(rating) 
                     ? "text-yellow-400 fill-current" 
                     : "text-muted-foreground"
@@ -103,11 +103,11 @@ const ProductCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-primary">
-              ${price.toFixed(2)}
+              ₹{price.toFixed(2)}
             </span>
             {originalPrice && (
               <span className="text-sm text-muted-foreground line-through">
-                ${originalPrice.toFixed(2)}
+                ₹{originalPrice.toFixed(2)}
               </span>
             )}
           </div>

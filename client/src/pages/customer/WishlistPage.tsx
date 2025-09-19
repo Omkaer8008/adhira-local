@@ -90,20 +90,20 @@ const WishlistPage = () => {
   const moveToCart = (productId: string) => {
     const item = wishlistItems.find(item => item.id === productId);
     if (item) {
-      console.log(`Moving ${item.name} to cart`);
+      console.log(`Moving ₹{item.name} to cart`);
       toast({
         title: "Added to cart",
-        description: `${item.name} has been added to your cart.`,
+        description: `₹{item.name} has been added to your cart.`,
       });
     }
   };
 
   const moveAllToCart = () => {
     const inStockItems = wishlistItems.filter(item => item.inStock);
-    console.log(`Moving ${inStockItems.length} items to cart`);
+    console.log(`Moving ₹{inStockItems.length} items to cart`);
     toast({
       title: "Added to cart",
-      description: `${inStockItems.length} items have been added to your cart.`,
+      description: `₹{inStockItems.length} items have been added to your cart.`,
     });
   };
 
@@ -158,7 +158,7 @@ const WishlistPage = () => {
               <h1 className="text-3xl font-bold text-foreground mb-2">My Wishlist</h1>
               <p className="text-muted-foreground">
                 {wishlistItems.length} items • {inStockCount} in stock
-                {totalSavings > 0 && ` • Save $${totalSavings.toFixed(2)}`}
+                {totalSavings > 0 && ` • Save ₹₹{totalSavings.toFixed(2)}`}
               </p>
             </div>
             
@@ -190,7 +190,7 @@ const WishlistPage = () => {
                 <div className="flex items-center justify-center">
                   <Heart className="h-5 w-5 text-green-600 mr-2" />
                   <span className="text-green-800 font-medium">
-                    You could save ${totalSavings.toFixed(2)} on these items!
+                    You could save ₹{totalSavings.toFixed(2)} on these items!
                   </span>
                 </div>
               </CardContent>
@@ -242,9 +242,9 @@ const WishlistPage = () => {
             {/* Mock recommended products */}
             {[1, 2, 3, 4].map((i) => (
               <ProductCard
-                key={`rec-${i}`}
-                id={`rec-${i}`}
-                name={`Recommended Product ${i}`}
+                key={`rec-₹{i}`}
+                id={`rec-₹{i}`}
+                name={`Recommended Product ₹{i}`}
                 price={49.99}
                 originalPrice={69.99}
                 image={i % 2 === 0 ? productJewelry : productSoap}
@@ -252,8 +252,8 @@ const WishlistPage = () => {
                 reviewCount={45}
                 seller="RecommendedSeller"
                 category="Various"
-                onAddToCart={() => console.log(`Added recommended product ${i} to cart`)}
-                onToggleWishlist={() => console.log(`Toggled wishlist for recommended product ${i}`)}
+                onAddToCart={() => console.log(`Added recommended product ₹{i} to cart`)}
+                onToggleWishlist={() => console.log(`Toggled wishlist for recommended product ₹{i}`)}
               />
             ))}
           </div>
